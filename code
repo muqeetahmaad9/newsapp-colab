@@ -1,0 +1,31 @@
+## 📜 Python Code (`news_app_colab.ipynb`)
+```python
+import requests
+import pandas as pd
+
+API_KEY = "your_api_key_here"
+NEWS_URL = "https://newsapi.org/v2/top-headlines"
+
+def get_news(category="technology"):
+    params = {
+        "apiKey": API_KEY,
+        "country": "us",
+        "category": category,
+        "pageSize": 5
+    }
+    response = requests.get(NEWS_URL, params=params)
+    
+    if response.status_code == 200:
+        articles = response.json()["articles"]
+        news_data = [[article['title'], article['url']] for article in articles]
+        return pd.DataFrame(news_data, columns=["Title", "Read More"])
+    else:
+        print("⚠️ Error fetching news!")
+        return None
+
+category = "technology"
+news_df = get_news(category)
+
+if news_df is not None:
+    from IPython.core.display import display
+    display(news_df)
